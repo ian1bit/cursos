@@ -9,11 +9,13 @@
 const ul = document.querySelector('.videos')
 const lis = Array.from(ul.children)
 
-lis.forEach(li => {
+const insertVideoClass = li => {
   li.classList.add('video')
-})
+}
 
-console.log(ul.children)
+lis.forEach(insertVideoClass)
+
+console.log(lis)
 
 /*
   02
@@ -42,7 +44,7 @@ console.log(h1.nextElementSibling)
   - Descubra quem é o irmão anterior da ul e exiba-o no console;
 */
 
-console.log(ul.previousSibling)
+console.log(ul.previousElementSibling)
 
 /*
   05
@@ -51,11 +53,15 @@ console.log(ul.previousSibling)
     exibida no console.
 */
 
-lis.forEach(li => {
-  li.addEventListener('click', event => {
-    console.log(event.target)
-  })
-})
+const showClickedLi = event => {
+  console.log(event.target)
+}
+
+const addClickEvent = li => {
+  li.addEventListener('click', showClickedLi)
+}
+
+lis.forEach(addClickEvent)
 
 /*
   06
@@ -75,16 +81,20 @@ const videos = [{
   length: '00:02:55'
 }]
 
+const insertVideoLi = ({ name, length }) => {
+  const li = document.createElement('li')
+
+  li.textContent = `${name} | ${length}`
+  ul.append(li)
+}
+
+const handleClickButton = () => {
+  videos.forEach(insertVideoLi)
+}
+
 const button = document.querySelector('button')
 
-button.addEventListener('click', () => {
-  videos.forEach(video => {
-    const li = document.createElement('li')
-
-    li.textContent = video.name
-    ul.append(li)
-  })
-})
+button.addEventListener('click', handleClickButton)
 
 /*
   07
@@ -96,5 +106,5 @@ button.addEventListener('click', () => {
 const body = document.body
 
 h1.addEventListener('click', () => {
-  body.remove()
+  body.innerHTML = ''
 })
