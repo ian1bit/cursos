@@ -10,35 +10,99 @@
   - Ele deve conter: 
     - No mínimo 6 caracteres;
     - Apenas letras maiúsculas e/ou minúsculas;
-  - Se o valor inserido não é válido, exiba um parágrafo laranja abaixo do  
+    - Se o valor inserido não é válido, exiba um parágrafo laranja abaixo do  
     input com a seguinte mensagem: "O valor deve conter no mínimo 6 caracteres,  
     com apenas letras maiúsculas e/ou minúsculas";
-  - Se o valor é válido, o parágrafo deve ser verde e exibir a mensagem  
+    - Se o valor é válido, o parágrafo deve ser verde e exibir a mensagem  
     "Username válido =)";
-  - Use as classes disponíveis no arquivo style.css para colorir o parágrafo;
-  - Não insira o parágrafo manualmente no index.html.
-  
-  Dica: pesquise pelo método "insertAdjacentElement", no MDN;
-*/
-
+    - Use as classes disponíveis no arquivo style.css para colorir o parágrafo;
+    - Não insira o parágrafo manualmente no index.html.
+    
+    Dica: pesquise pelo método "insertAdjacentElement", no MDN;
+    */
+   
 const inputUsername = document.querySelector('#username')
-const p = document.createElement('p')
+const form = document.querySelector('form')
+const button = document.querySelector('button')
 
-inputUsername.addEventListener('keyup', event => {
-  const inputValue = event.target.value
-  const usernameRegex = /^[a-zA-Z]{6,}$/
+const paragraphUsernameFeedback = document.createElement('p')
+const paragraphSubmitFeedback = document.createElement('p')
 
-  if (!usernameRegex.test(inputValue)) {
-    p.textContent = 'O valor deve conter no mínimo 6 caracteres, com apenas letras maiúsculas e/ou minúsculas'
-    p.setAttribute('class', 'username-help-feedback')
-    event.target.insertAdjacentElement('afterend', p)
+paragraphSubmitFeedback.setAttribute('data-feedback', 'submit-feedback')
+
+const invalidSubmitInfo = {
+  paragraph: paragraphSubmitFeedback,
+  text: 'Por favor, insira um username válido',
+  className: 'submit-help-feedback',
+  previousSibling: button,
+}
+const validSubmitInfo = {
+  paragraph: paragraphSubmitFeedback,
+  text: 'Dados enviados =)',
+  className: 'submit-success-feedback',
+  previousSibling: button,
+}
+
+const invalidUsernameInfo = {
+  paragraph: paragraphUsernameFeedback,
+  text: 'O valor deve conter no mínimo 6 caracteres, com apenas letras maiúsculas e/ou minúsculas',
+  className: 'username-help-feedback',
+  previousSibling: inputUsername,
+}
+
+const validUsernameInfo = {
+  paragraph: paragraphUsernameFeedback,
+  text: 'Username válido =)',
+  className: 'username-success-feedback',
+  previousSibling: inputUsername,
+}
+
+const insertParagraphIntoDOM = paragraphInfo => {
+  const { paragraph, text, className, previousSibling } = paragraphInfo
+ paragraph.textContent = text
+ paragraph.setAttribute('class', className)
+ previousSibling.insertAdjacentElement('afterend', paragraph)
+}
+
+const removeSubmitParagraph = () => {
+  const paragraphSubmitFeedbackExists = document
+    .querySelector('[data-feedback="submit-feedback"]')
+
+  if (paragraphSubmitFeedbackExists) {
+    paragraphSubmitFeedback.remove()
+  }
+}
+
+const testUsername = inputValue => /^[a-zA-Z]{6,}$/.test(inputValue)
+
+const showUsernameInfo = event => {
+  const isUsernameValid = testUsername(event.target.value)
+
+  removeSubmitParagraph()
+
+  if (!isUsernameValid) {
+    insertParagraphIntoDOM(invalidUsernameInfo)
     return
   }
 
-  p.textContent = 'Username válido =)'
-  p.setAttribute('class', 'username-success-feedback')
-  event.target.insertAdjacentElement('afterend', p)
-})
+  insertParagraphIntoDOM(validUsernameInfo)
+}
+
+const showSubmitInfo = event => {
+  event.preventDefault()
+
+  const isUsernameValid = testUsername(inputUsername.value)
+
+  if (!isUsernameValid) {
+    insertParagraphIntoDOM(invalidSubmitInfo)
+    return
+  }
+
+  insertParagraphIntoDOM(validSubmitInfo)
+}
+
+inputUsername.addEventListener('input', showUsernameInfo)
+form.addEventListener('submit', showSubmitInfo)
 
 /*
   02
@@ -72,3 +136,16 @@ inputUsername.addEventListener('keyup', event => {
   Spoiler alert: este tipo de exercício será frequente em etapas mais avançadas  
   do curso, onde falaremos sobre TDD. Vá se aquecendo =D
 */
+
+const some = (array, func) => {
+  for (let i = 0; i < array.length; i++) {
+    if (func(array[i])) {
+      return true
+    }
+  }
+
+  return false
+}
+
+console.log(some([1, 2, 3], item => item === 2))
+console.log(some([4, 5, 6], item => item === 3))
