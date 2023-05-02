@@ -15,6 +15,7 @@ public class Aula05EstruturasCondicionais02 {
         } else {
             categoria = "Categoria Adulto";
         }
+        // categoria = idade < 15 ? "Categoria infantil" : idade >= 15 && idade < 18 ? "Categoria Juvenil" : "Categoria Adulto";
         System.out.println(categoria);
     }
 }
